@@ -16,7 +16,7 @@ namespace MobyIpsumAPI.Data
         private static string FilterSpecialChars(string input)
         {
             //remove special characters from text
-            var re = @"[\\t|\\n|\\r|\t|\n|\r|(|)|;|\d|,|.]+";
+            var re = @"\\[nt]|[\d\t\n\(\);""\\:,.]";
             var result = Regex.Replace(input, re, string.Empty);
             return result;
         }
