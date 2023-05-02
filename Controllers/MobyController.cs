@@ -5,22 +5,81 @@ using MobyIpsumAPI.Data;
 
 namespace MobyIpsumAPI.Controllers
 {
-    [Route("api/moby")]
+    [Route("api")]
     [ApiController]
     public class MobyController : ControllerBase
     {
+        // if no user input, give 'em 23 words
+        private const int Length = 23;
         // GET: api/moby
-        [HttpGet]
-        public IEnumerable<string> GetMain()
+        [HttpGet("moby")]
+        public IEnumerable<string> GetMoby()
         {
-            var payload = new MobyDto("moby");
-            return new string[] { payload.Opening + payload.Content };
+            var payload = GeneratePayload("moby", Length);
+            return payload;
         }
-        // GET api/moby/other
-        [HttpGet("other")]
-        public IEnumerable<string> GetOther()
+        // GET api/wealth
+        [HttpGet("wealth")]
+        public IEnumerable<string> GetWealth()
         {
-            return new string[] { "other", "ipsum" };
+            var payload = GeneratePayload("wealth", Length);
+            return payload;
+        }
+
+        [HttpGet("copperfield")]
+        public IEnumerable<string> GetCopperfield()
+        {
+            var payload = GeneratePayload("copperfield", Length);
+            return payload;
+        }
+
+        [HttpGet("pride")]
+        public IEnumerable<string> GetPride()
+        {
+            var payload = GeneratePayload("pride", Length);
+            return payload;
+        }
+
+        [HttpGet("canterbury")]
+        public IEnumerable<string> GetCanterbury()
+        {
+            var payload = GeneratePayload("canterbury", Length);
+            return payload;
+        }
+
+        [HttpGet("wasteland")]
+        public IEnumerable<string> GetWasteland()
+        {
+            var payload = GeneratePayload("wasteland", Length);
+            return payload;
+        }
+
+        [HttpGet("metamorphosis")]
+        public IEnumerable<string> GetMetamorphosis()
+        {
+            var payload = GeneratePayload("metamorphosis", Length);
+            return payload;
+        }
+
+        [HttpGet("twocities")]
+        public IEnumerable<string> GetTwoCities()
+        {
+            var payload = GeneratePayload("twocities", Length);
+            return payload;
+        }
+
+        [HttpGet("paradise")]
+        public IEnumerable<string> GetParadise()
+        {
+            var payload = GeneratePayload("paradise", Length);
+            return payload;
+        }
+
+        private IEnumerable<string> GeneratePayload(string title, int length)
+        {
+            var data = new MobyDto(title);
+            var payload = ContentProcessor.Process(length, data.Content);
+            return new[] { data.Opening + " " + payload };
         }
     }
 }
