@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MobyIpsumAPI.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,7 +13,8 @@ namespace MobyIpsumAPI.Controllers
         [HttpGet]
         public IEnumerable<string> GetMain()
         {
-            return new string[] { "moby", "ipsum" };
+            var payload = new MobyDto("moby");
+            return new string[] { payload.Opening + payload.Content };
         }
         // GET api/moby/other
         [HttpGet("other")]
