@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace MobyIpsumAPI.Data
 {
@@ -15,8 +14,9 @@ namespace MobyIpsumAPI.Data
 
         private static string FilterSpecialChars(string input)
         {
-            //remove special characters from text
-            var re = @"\\[nt]|[\d\t\n\(\);""\\:,.]";
+            input = input.Replace("\\n", " ");
+            input = input.Replace("\\t", " ");
+            var re = @"[\d\t\n\(\);""\\:,.]";
             var result = Regex.Replace(input, re, string.Empty);
             return result;
         }

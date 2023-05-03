@@ -1,105 +1,59 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MobyIpsumAPI.Data;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Net.Mime;
 
 namespace MobyIpsumAPI.Controllers
 {
+    [Produces(MediaTypeNames.Application.Json)]
     [Route("api")]
     [ApiController]
     public class MobyController : ControllerBase
     {
         // if no user input, give 'em 23 words
         private const int Length = 23;
-        // GET: api/moby
-        [HttpGet("moby")]
-        public IEnumerable<string> GetMoby()
+        [HttpGet("{endpoint?}")]
+        public IActionResult GetEndpoint(string endpoint)
         {
-            var payload = GeneratePayload("moby", Length);
-            return payload;
+            var payload = GeneratePayload(endpoint, Length);
+            if (payload == null)
+                return NotFound("bad title");
+            return Ok(payload);
         }
-        // GET api/wealth
-        [HttpGet("wealth")]
-        public IEnumerable<string> GetWealth()
+        [HttpGet("{endpoint?}/{length}")]
+        public IActionResult GetEndpointWithSpecificLength(string endpoint, int length)
         {
-            var payload = GeneratePayload("wealth", Length);
-            return payload;
+            if (length > 999)
+                return BadRequest("request too many, max 999");
+            var payload = GeneratePayload(endpoint, length);
+            if (payload == null)
+                return NotFound();
+            return Ok(payload);
         }
-
-        [HttpGet("copperfield")]
-        public IEnumerable<string> GetCopperfield()
-        {
-            var payload = GeneratePayload("copperfield", Length);
-            return payload;
-        }
-
-        [HttpGet("pride")]
-        public IEnumerable<string> GetPride()
-        {
-            var payload = GeneratePayload("pride", Length);
-            return payload;
-        }
-
-        [HttpGet("canterbury")]
-        public IEnumerable<string> GetCanterbury()
-        {
-            var payload = GeneratePayload("canterbury", Length);
-            return payload;
-        }
-
-        [HttpGet("wasteland")]
-        public IEnumerable<string> GetWasteland()
-        {
-            var payload = GeneratePayload("wasteland", Length);
-            return payload;
-        }
-
-        [HttpGet("metamorphosis")]
-        public IEnumerable<string> GetMetamorphosis()
-        {
-            var payload = GeneratePayload("metamorphosis", Length);
-            return payload;
-        }
-
-        [HttpGet("twocities")]
-        public IEnumerable<string> GetTwoCities()
-        {
-            var payload = GeneratePayload("twocities", Length);
-            return payload;
-        }
-
-        [HttpGet("paradise")]
-        public IEnumerable<string> GetParadise()
-        {
-            var payload = GeneratePayload("paradise", Length);
-            return payload;
-        }
-
-        private IEnumerable<string> GeneratePayload(string title, int length)
+        private static Payload? GeneratePayload(string title, int length)
         {
             var data = new MobyDto(title);
-            var payload = ContentProcessor.Process(length, data.Content);
-            return new[] { data.Opening + " " + payload };
+
+            if (data.Title == null)
+            {
+                return null;
+            }
+            else
+            {
+                var processed = ContentProcessor.Process(length, data.Content);
+                var payload = new Payload(data.Title, data.Opening, processed);
+                return payload;
+            }
+
+        }
+        public class Payload
+        {
+            public string? Title { get; set; }
+            public string? Content { get; set; }
+            public Payload(string? title, string? opening, string? processedText)
+            {
+                Title = title;
+                Content = opening + " " + processedText + ".";
+            }
         }
     }
 }
-
-    
-    //// POST api/<ValuesController>
-    //    [HttpPost]
-    //    public void Post([FromBody] string value)
-    //    {
-    //    }
-
-    //    // PUT api/<ValuesController>/5
-    //    [HttpPut("{id}")]
-    //    public void Put(int id, [FromBody] string value)
-    //    {
-    //    }
-
-    //    // DELETE api/<ValuesController>/5
-    //    [HttpDelete("{id}")]
-    //    public void Delete(int id)
-    //    {
-    //    }
-    //}

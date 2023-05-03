@@ -1,8 +1,4 @@
-using MobyIpsumAPI.Data;
-
 var builder = WebApplication.CreateBuilder(args);
-using var db = new MobyContext();
-Console.WriteLine($"Database path: {db.DbPath}");
 // Add services to the container.
 
 builder.Services.AddControllers();
